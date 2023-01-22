@@ -12,84 +12,87 @@
 
 %define parse.error verbose
 
-%token FOR REMOVE IN FILTER WITH RETURN INSERT UPDATE CREATE DROP JOIN OTHER
+%token FOR REMOVE IN FILTER WITH RETURN INSERT UPDATE CREATE DROP UNEXPECTED_TOKEN
 
 %token
-    END 0       "end of file"
 
-    OPEN_CIRCLE_BRACKET         "("
-    OPEN_FIGURE_BRACKET         "{"
-    CLOSE_CIRCLE_BRACKET        ")"
-    CLOSE_FIGURE_BRACKET        "}"
-    ENDLINE     ";"
-    COLON     ":"
-    COMMA       ","
-    DOT         "."
-    AND         "&&"
-    OR          "||"
+    START_PARENTHESIS         "("
+    CLOSE_PARENTHESIS         ")"
+    START_BRACKET             "{"
+    CLOSE_BRACKET             "}"
+    SEMICOLON                 ";"
+    COLON                     ":"
+    COMMA                     ","
+    DOT                       "."
+    AND                       "&&"
+    OR                        "||"
 ;
 %token TYPE QUOTE
 
-%token CMP BOOL INT FLOAT STR QSTR
+%token CMP BOOL INT FLOAT STR
 
-%type <intval> CMP
-%type <intval> TYPE
-%type <boolval> BOOL
-%type <intval> INT
-%type <floatval> FLOAT
-%type <str> STR
-%type <intval> AND
-%type <intval> OR
+%type <number_value> CMP
+%type <number_value> TYPE
+%type <boolean_value> BOOL
+%type <number_value> INT
+%type <float_num_value> FLOAT
+%type <string> STR
 
-// You declare the types of nonterminals using %type.
-%type <nonterminal> root
+%type <number_value> AND
+%type <number_value> OR
+
+%type <nonterminal> ast_root
 %type <nonterminal> query
 
 %type <nonterminal> select_query
-%type <nonterminal> empty_select
-%type <nonterminal> filter_select
-%type <nonterminal> join_empty_select
-%type <nonterminal> join_filter_select
+%type <nonterminal> select_simple
 
-%type <nonterminal> delete_query
-%type <nonterminal> empty_delete
-%type <nonterminal> filter_delete
+%type <nonterminal> select_with_filter
+%type <nonterminal> select_join_simple
+%type <nonterminal> select_join_with_filter
 
 %type <nonterminal> update_query
-%type <nonterminal> empty_update
-%type <nonterminal> filter_update
+%type <nonterminal> update_simple
+%type <nonterminal> update_with_filter
+
+%type <nonterminal> delete_query
+%type <nonterminal> delete_simple
+%type <nonterminal> delete_with_filter
 
 %type <nonterminal> create_query
 %type <nonterminal> drop_query
 
-%type <nonterminal> filter_statement
+%type <nonterminal> insert_query
+
+%type <nonterminal> filter_condition
 %type <nonterminal> logic_statement
+
 %type <nonterminal> column
 %type <nonterminal> column_name
+
 %type <nonterminal> terminal
 
-%type <nonterminal> insert_query
 %type <nonterminal> values_list
 %type <nonterminal> values_pair
+
 %type <nonterminal> string_list
 
 
 %union {
-    char str[50];
-    int intval;
-    bool boolval;
-    ast_node* nonterminal;
-    float floatval;
-
-    int cmp_type;
-    int logic_op;
+    bool boolean_value;
+    char string[100];
+    float float_num_value;
+    int cmp_op_type;
+    int logic_op_type;
     int type;
+    int number_value;
+    ast_node* nonterminal;
 }
 
 %%
 
-root:
-|   root query ENDLINE { print_tree($2); printf("$> "); }
+ast_root:
+|   ast_root query SEMICOLON { output($2); printf("$> "); }
 ;
 
 terminal:
@@ -110,46 +113,46 @@ query:
 ;
 
 select_query:
-|   empty_select
-|   filter_select
-|   join_empty_select
-|   join_filter_select
+|   select_simple
+|   select_with_filter
+|   select_join_simple
+|   select_join_with_filter
 ;
-empty_select:
+select_simple:
 |   FOR column_name IN STR RETURN STR { $$ = new_select($4, NULL, NULL, NULL, NULL); }
 ;
-filter_select:
-|   FOR column_name IN STR FILTER filter_statement RETURN STR { $$ = new_select($4, $6, NULL, NULL, NULL); }
+select_with_filter:
+|   FOR column_name IN STR FILTER filter_condition RETURN STR { $$ = new_select($4, $6, NULL, NULL, NULL); }
 ;
 
-join_empty_select:
+select_join_simple:
 |   FOR column_name IN STR FOR column_name IN STR RETURN STR "," STR { $$ = new_select($4, NULL, $8, $6, $2); }
 ;
 
-join_filter_select:
-|   FOR column_name IN STR FOR column_name IN STR FILTER filter_statement RETURN STR "," STR { $$ = new_select($4, $10, $8, $6, $2); }
+select_join_with_filter:
+|   FOR column_name IN STR FOR column_name IN STR FILTER filter_condition RETURN STR "," STR { $$ = new_select($4, $10, $8, $6, $2); }
 ;
 
 update_query:
-|   empty_update
-|   filter_update
+|   update_simple
+|   update_with_filter
 ;
-empty_update:
+update_simple:
 |   FOR column_name IN STR UPDATE STR WITH "{" values_list "}" IN STR { $$ = new_update($4, NULL, $9); }
 ;
-filter_update:
-|   FOR column_name IN STR FILTER filter_statement UPDATE STR WITH "{" values_list "}" IN STR { $$ = new_update($4, $6, $11); }
+update_with_filter:
+|   FOR column_name IN STR FILTER filter_condition UPDATE STR WITH "{" values_list "}" IN STR { $$ = new_update($4, $6, $11); }
 ;
 
 delete_query:
-|   empty_delete
-|   filter_delete
+|   delete_simple
+|   delete_with_filter
 ;
-empty_delete:
+delete_simple:
 |   FOR column_name IN STR REMOVE STR IN STR { $$ = new_delete($4, NULL); }
 ;
-filter_delete:
-|   FOR column_name IN STR FILTER filter_statement REMOVE STR IN STR { $$ = new_delete($4, $6); }
+delete_with_filter:
+|   FOR column_name IN STR FILTER filter_condition REMOVE STR IN STR { $$ = new_delete($4, $6); }
 ;
 
 insert_query:
@@ -173,10 +176,10 @@ values_pair:
 |   STR ":" terminal { $$ = new_pair($1, $3); }
 ;
 
-filter_statement:
-|   filter_statement "&&" filter_statement { $$ = new_where($2, $1, $3); }
-|   filter_statement "||" filter_statement { $$ = new_where($2, $1, $3); }
-|   "(" filter_statement ")" { $$ = $2; }
+filter_condition:
+|   filter_condition "&&" filter_condition { $$ = new_where($2, $1, $3); }
+|   filter_condition "||" filter_condition { $$ = new_where($2, $1, $3); }
+|   "(" filter_condition ")" { $$ = $2; }
 |   logic_statement
 ;
 

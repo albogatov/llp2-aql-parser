@@ -31,7 +31,7 @@ char* print_string_node(ast_node* node, int indentation) {
     char* output = malloc(sizeof(char));
     indent(indentation, &output);
     safe_strcat(&output, "String { ");
-    safe_strcat(&output, node->fields_one.str);
+    safe_strcat(&output, node->fields_one.string);
     safe_strcat(&output, " }");
     return output;
 }
@@ -41,15 +41,15 @@ char* print_column_node(ast_node* node, int indentation) {
     indent(indentation, &output);
     safe_strcat(&output, "Column {\n");
     indent(indentation + 1, &output);
-    if (node->fields_one.str) {
+    if (node->fields_one.string) {
         safe_strcat(&output, "table: ");
-        safe_strcat(&output, node->fields_one.str);
+        safe_strcat(&output, node->fields_one.string);
         safe_strcat(&output, "\n");
         indent(indentation + 1, &output);
     }
-    if (node->fields_two.str) {
+    if (node->fields_two.string) {
         safe_strcat(&output, "column_name: ");
-        safe_strcat(&output, node->fields_two.str);
+        safe_strcat(&output, node->fields_two.string);
         safe_strcat(&output, "\n");
         indent(indentation, &output);
     }
@@ -61,9 +61,9 @@ char* print_integer_node(ast_node* node, int indentation) {
     char* output = malloc(sizeof(char));
     indent(indentation, &output);
     safe_strcat(&output, "Number { ");
-    int length = snprintf(NULL, 0, "%d", node->fields_one.integer);
+    int length = snprintf(NULL, 0, "%d", node->fields_one.number);
     char* str = malloc( length + 1 );
-    snprintf(str, length + 1, "%d", node->fields_one.integer);
+    snprintf(str, length + 1, "%d", node->fields_one.number);
     safe_strcat(&output, str);
     free(str);
     safe_strcat(&output, " }");
@@ -74,9 +74,9 @@ char* print_float_node(ast_node* node, int indentation) {
     char* output = malloc(sizeof(char));
     indent(indentation, &output);
     safe_strcat(&output, "Float Number { ");
-    int length = snprintf(NULL, 0, "%f", node->fields_one.flt);
+    int length = snprintf(NULL, 0, "%f", node->fields_one.float_number);
     char* str = malloc( length + 1 );
-    snprintf(str, length + 1, "%f", node->fields_one.flt);
+    snprintf(str, length + 1, "%f", node->fields_one.float_number);
     safe_strcat(&output, str);
     free(str);
     safe_strcat(&output, " }");
@@ -125,7 +125,7 @@ char* print_pair_node(ast_node* node, int indentation) {
     safe_strcat(&output, "Pair {\n");
     indent(indentation + 1, &output);
     safe_strcat(&output, "column_name: ");
-    safe_strcat(&output, node->fields_one.str);
+    safe_strcat(&output, node->fields_one.string);
     safe_strcat(&output, "\n");
     char* pair = to_string_general(node->second, indentation + 1);
     safe_strcat(&output, pair);
@@ -155,12 +155,12 @@ char* Select_to_string(ast_node* node, int indentation) {
     safe_strcat(&output, "\n");
     indent(indentation + 1, &output);
     safe_strcat(&output, "table: ");
-    safe_strcat(&output, node->fields_one.str);
+    safe_strcat(&output, node->fields_one.string);
     safe_strcat(&output, "\n");
     indent(indentation + 1, &output);
     safe_strcat(&output, "join: ");
-    if (node->fields_two.str != NULL) {
-        safe_strcat(&output, node->fields_two.str);
+    if (node->fields_two.string != NULL) {
+        safe_strcat(&output, node->fields_two.string);
     } else {
         safe_strcat(&output, "NULL");
     }
@@ -198,7 +198,7 @@ char* print_delete_node(ast_node* node, int indentation) {
     safe_strcat(&output, "Delete {\n");
     indent(indentation + 1, &output);
     safe_strcat(&output, "table: ");
-    safe_strcat(&output, node->fields_one.str);
+    safe_strcat(&output, node->fields_one.string);
     safe_strcat(&output, "\n");
     indent(indentation + 1, &output);
     safe_strcat(&output, "condition: ");
@@ -223,7 +223,7 @@ char* print_insert_node(ast_node* node, int indentation) {
     safe_strcat(&output, "Insert {\n");
     indent(indentation + 1, &output);
     safe_strcat(&output, "name: ");
-    safe_strcat(&output, node->fields_one.str);
+    safe_strcat(&output, node->fields_one.string);
     safe_strcat(&output, "\n");
     char* ptr = to_string_general(node->first, indentation + 1);
     safe_strcat(&output, ptr);
@@ -240,7 +240,7 @@ char* print_update_node(ast_node* node, int indentation) {
     safe_strcat(&output, "Update {\n");
     indent(indentation + 1, &output);
     safe_strcat(&output, "table: ");
-    safe_strcat(&output, node->fields_one.str);
+    safe_strcat(&output, node->fields_one.string);
     safe_strcat(&output, "\n");
     indent(indentation + 1, &output);
     char* ptr;
@@ -277,7 +277,7 @@ char* print_create_node(ast_node* node, int indentation) {
     safe_strcat(&output, "Create {\n");
     indent(indentation + 1, &output);
     safe_strcat(&output, "name: ");
-    safe_strcat(&output, node->fields_one.str);
+    safe_strcat(&output, node->fields_one.string);
     safe_strcat(&output, "\n");
     char* ptr = to_string_general(node->first, indentation + 1);
     safe_strcat(&output, ptr);
@@ -292,7 +292,7 @@ char* print_drop_node(ast_node* node, int indentation) {
     char* output = malloc(sizeof(char));
     indent(indentation, &output);
     safe_strcat(&output, "Drop { ");
-    safe_strcat(&output, node->fields_one.str);
+    safe_strcat(&output, node->fields_one.string);
     safe_strcat(&output, " }");
     return output;
 }
@@ -306,7 +306,7 @@ char* print_where_node(ast_node* node, int indentation) {
     free(ptr);
     safe_strcat(&output, "\n");
     indent(indentation + 1, &output);
-    safe_strcat(&output, LogicOperation_strings[node->fields_one.log_op]);
+    safe_strcat(&output, logic_repr_[node->fields_one.logic_op_type_type]);
     safe_strcat(&output, "\n");
     ptr = to_string_general(node->second, indentation + 1);
     safe_strcat(&output, ptr);
@@ -326,7 +326,7 @@ char* print_compare_node(ast_node* node, int indentation) {
     free(ptr);
     safe_strcat(&output, "\n");
     indent(indentation + 1, &output);
-    safe_strcat(&output, cmp_op_repr_[node->fields_one.comp]);
+    safe_strcat(&output, cmp_op_repr_[node->fields_one.comp_op_type]);
     safe_strcat(&output, "\n");
     ptr = to_string_general(node->second, indentation + 1);
     safe_strcat(&output, ptr);

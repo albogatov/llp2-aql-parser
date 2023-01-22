@@ -35,17 +35,17 @@ static const char* type_repr_[] = {
         "BOOLEAN"
 };
 
-enum LogicOperation {
+enum logic_op_type_type {
     AND_OP,
     OR_OP
 };
 
-static const char* LogicOperation_strings[] = {
+static const char* logic_repr_[] = {
         "&&",
         "||"
 };
 
-enum Comparison {
+enum compare_op_type {
     GREATER = 1,
     GREATER_OR_EQUAL,
     LESS,
@@ -55,7 +55,7 @@ enum Comparison {
     NO_COMPARE
 };
 
-enum Comparison switch_cmp_mode(enum Comparison val);
+enum compare_op_type switch_cmp_mode(enum compare_op_type val);
 
 static const char* cmp_op_repr_[] = {
         "GREATER",
@@ -69,11 +69,11 @@ static const char* cmp_op_repr_[] = {
 };
 
 union fields {
-    char* str;
-    enum LogicOperation log_op;
-    enum Comparison comp;
-    int integer;
-    float flt;
+    char* string;
+    enum logic_op_type_type logic_op_type_type;
+    enum compare_op_type comp_op_type;
+    int number;
+    float float_number;
     bool boolean;
     enum DataType data_type;
 };
@@ -105,8 +105,8 @@ ast_node* new_insert(const char* v_first, ast_node* first);
 ast_node* new_update(const char* v_first, ast_node* first, ast_node* second);
 ast_node* new_create(const char* v_first, ast_node* first);
 ast_node* new_drop(const char* v_first);
-ast_node* new_where(enum LogicOperation v_first, ast_node* first, ast_node* second);
-ast_node* new_compare(enum Comparison v_first, ast_node* first, ast_node* second);
+ast_node* new_where(enum logic_op_type_type v_first, ast_node* first, ast_node* second);
+ast_node* new_compare(enum compare_op_type v_first, ast_node* first, ast_node* second);
 
 void close_tree(ast_node* root);
 

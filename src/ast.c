@@ -2,16 +2,30 @@
 #include "../include/string_utils.h"
 
 enum compare_op_type switch_cmp_mode(enum compare_op_type val) {
-    if (val < 3 || val > 5) return 8 - val;
-    return val;
+    switch (val) {
+        case GREATER:
+            return LESS;
+        case GREATER_OR_EQUAL:
+            return LESS_OR_EQUAL;
+        case LESS:
+            return GREATER;
+        case LESS_OR_EQUAL:
+            return GREATER_OR_EQUAL;
+        case EQUAL:
+            return EQUAL;
+        case NOT_EQUAL:
+            return NOT_EQUAL;
+        case NO_COMPARE:
+            return NO_COMPARE;
+    }
 }
 
 ast_node* new_name(const char* v_first, const char* v_second) {
     ast_node* new_node = malloc(sizeof(ast_node));
     new_node->type = NAME_NODE;
-    if (v_first != NULL)
+    if (v_first)
         new_node->fields_one.string = safe_strcpy(v_first);
-    if (v_second != NULL)
+    if (v_second)
         new_node->fields_two.string = safe_strcpy(v_second);
     new_node->first = NULL;
     new_node->second = NULL;
@@ -98,7 +112,8 @@ ast_node* new_select(const char* v_first, ast_node* first, const char* v_second,
     ast_node* new_node = malloc(sizeof(ast_node));
     new_node->type = FOR_NODE;
     new_node->fields_one.string = safe_strcpy(v_first);
-    if (v_second != NULL) new_node->fields_two.string = safe_strcpy(v_second);
+    if (v_second)
+        new_node->fields_two.string = safe_strcpy(v_second);
     else new_node->fields_two.string = NULL;
     new_node->first = first;
     new_node->second = second;
@@ -170,22 +185,17 @@ ast_node* new_compare(enum compare_op_type v_first, ast_node* first, ast_node* s
 }
 
 void close_tree(ast_node* root) {
-    if (root == NULL) return;
+    if (!root) return;
     close_tree(root->first);
     close_tree(root->second);
     close_tree(root->third);
-    if (root->type == NAME_NODE ||
-        root->type == STRING_NODE ||
-        root->type == FOR_NODE ||
-        root->type == REMOVE_NODE ||
-        root->type == INSERT_NODE ||
-        root->type == UPDATE_NODE ||
-        root->type == CREATE_NODE ||
-        root->type == DROP_NODE ||
-        root->type == PAIR_NODE)
-        free(root->fields_one.string);
-    if (root->type == NAME_NODE ||
-        root->type == FOR_NODE)
-        free(root->fields_two.string);
+    if (root->type) {
+        if (root->type == NAME_NODE || root->type == STRING_NODE || root->type == FOR_NODE ||
+                root->type == REMOVE_NODE || root->type == INSERT_NODE || root->type == UPDATE_NODE ||
+                    root->type == CREATE_NODE || root->type == DROP_NODE || root->type == PAIR_NODE)
+            free(root->fields_one.string);
+        if (root->type == NAME_NODE || root->type == FOR_NODE)
+            free(root->fields_two.string);
+    }
     free(root);
 }

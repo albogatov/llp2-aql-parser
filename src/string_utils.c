@@ -136,7 +136,7 @@ char* print_pair_node(ast_node* node, int indentation) {
     return output;
 }
 
-char* Select_to_string(ast_node* node, int indentation) {
+char* print_select_node(ast_node* node, int indentation) {
     char* output = malloc(sizeof(char));
     indent(indentation, &output);
     safe_string_concatenation(&output, "FOR {\n");
@@ -354,7 +354,7 @@ node_to_string node_to_string_functions[] = {
         print_boolean_node,
         print_list_node,
         print_pair_node,
-        Select_to_string,
+        print_select_node,
         print_insert_node,
         print_delete_node,
         print_update_node,

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef AST_H
+#define AST_H
 #include <stdbool.h>
 
 enum NodeType {
@@ -103,3 +104,4 @@ Node* new_compare(enum Comparison v_first, Node* first, Node* second);
 
 void close_tree(Node* root);
 
+#endif

@@ -10,9 +10,9 @@ Node* new_name(const char* v_first, const char* v_second) {
     Node* new_node = malloc(sizeof(Node));
     new_node->type = NAME_my;
     if (v_first != NULL)
-        new_node->v_first.str = str_copy(v_first);
+        new_node->v_first.str = safe_strcpy(v_first);
     if (v_second != NULL)
-        new_node->v_second.str = str_copy(v_second);
+        new_node->v_second.str = safe_strcpy(v_second);
     new_node->first = NULL;
     new_node->second = NULL;
     new_node->third = NULL;
@@ -22,10 +22,10 @@ Node* new_name(const char* v_first, const char* v_second) {
 //Node *new_string(const char *v_first, const char *v_second) {
 //    Node* new_node = malloc(sizeof(Node));
 //    new_node->type = STRING_my;
-//    new_node->v_first.str = str_copy(v_first);
+//    new_node->v_first.str = safe_strcpy(v_first);
 //    if (v_second) {
-//        str_concat(&new_node->v_first.str, " ");
-//        str_concat(&new_node->v_first.str, v_second);
+//        safe_strcat(&new_node->v_first.str, " ");
+//        safe_strcat(&new_node->v_first.str, v_second);
 //    }
 //    new_node->first = NULL;
 //    new_node->second = NULL;
@@ -37,12 +37,12 @@ Node *new_string(Node *first, const char *v_second) {
     Node* new_node = malloc(sizeof(Node));
     new_node->type = STRING_my;
     if (first)
-        new_node->v_first.str = str_copy(first->v_first.str);
+        new_node->v_first.str = safe_strcpy(first->v_first.str);
     if (v_second) {
         if (first)
-            str_concat(&new_node->v_first.str, " ");
-        else new_node->v_first.str = str_copy("");
-        str_concat(&new_node->v_first.str, v_second);
+            safe_strcat(&new_node->v_first.str, " ");
+        else new_node->v_first.str = safe_strcpy("");
+        safe_strcat(&new_node->v_first.str, v_second);
     }
     new_node->first = NULL;
     new_node->second = NULL;
@@ -102,7 +102,7 @@ Node* new_list(Node* first, Node* second) {
 Node* new_pair(const char* v_first, Node* second) {
     Node* new_node = malloc(sizeof(Node));
     new_node->type = PAIR_my;
-    new_node->v_first.str = str_copy(v_first);
+    new_node->v_first.str = safe_strcpy(v_first);
     new_node->first = NULL;
     new_node->second = second;
     new_node->third = NULL;
@@ -111,8 +111,8 @@ Node* new_pair(const char* v_first, Node* second) {
 Node* new_select(const char* v_first, Node* first, const char* v_second, Node* second, Node* third) {
     Node* new_node = malloc(sizeof(Node));
     new_node->type = FOR_my;
-    new_node->v_first.str = str_copy(v_first);
-    if (v_second != NULL) new_node->v_second.str = str_copy(v_second);
+    new_node->v_first.str = safe_strcpy(v_first);
+    if (v_second != NULL) new_node->v_second.str = safe_strcpy(v_second);
     else new_node->v_second.str = NULL;
     new_node->first = first;
     new_node->second = second;
@@ -122,7 +122,7 @@ Node* new_select(const char* v_first, Node* first, const char* v_second, Node* s
 Node* new_delete(const char* v_first, Node* first) {
     Node* new_node = malloc(sizeof(Node));
     new_node->type = REMOVE_my;
-    new_node->v_first.str = str_copy(v_first);
+    new_node->v_first.str = safe_strcpy(v_first);
     new_node->first = first;
     new_node->second = NULL;
     new_node->third = NULL;
@@ -131,7 +131,7 @@ Node* new_delete(const char* v_first, Node* first) {
 Node* new_insert(const char* v_first, Node* first) {
     Node* new_node = malloc(sizeof(Node));
     new_node->type = INSERT_my;
-    new_node->v_first.str = str_copy(v_first);
+    new_node->v_first.str = safe_strcpy(v_first);
     new_node->first = first;
     new_node->second = NULL;
     new_node->third = NULL;
@@ -140,7 +140,7 @@ Node* new_insert(const char* v_first, Node* first) {
 Node* new_update(const char* v_first, Node* first, Node* second) {
     Node* new_node = malloc(sizeof(Node));
     new_node->type = UPDATE_my;
-    new_node->v_first.str = str_copy(v_first);
+    new_node->v_first.str = safe_strcpy(v_first);
     new_node->first = first;
     new_node->second = second;
     new_node->third = NULL;
@@ -149,7 +149,7 @@ Node* new_update(const char* v_first, Node* first, Node* second) {
 Node* new_create(const char* v_first, Node* first) {
     Node* new_node = malloc(sizeof(Node));
     new_node->type = CREATE_my;
-    new_node->v_first.str = str_copy(v_first);
+    new_node->v_first.str = safe_strcpy(v_first);
     new_node->first = first;
     new_node->second = NULL;
     new_node->third = NULL;
@@ -158,7 +158,7 @@ Node* new_create(const char* v_first, Node* first) {
 Node* new_drop(const char* v_first) {
     Node* new_node = malloc(sizeof(Node));
     new_node->type = DROP_my;
-    new_node->v_first.str = str_copy(v_first);
+    new_node->v_first.str = safe_strcpy(v_first);
     new_node->first = NULL;
     new_node->second = NULL;
     new_node->third = NULL;

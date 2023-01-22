@@ -4,5 +4,5 @@
 #include "string_utils.h"
 #include "stdio.h"
 
-void print_tree(Node* root);
+void print_tree(ast_node* root);
 #endif

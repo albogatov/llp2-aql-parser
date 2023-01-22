@@ -1,6 +1,6 @@
 #include "../include/output.h"
 
-void print_tree(Node* root) {
+void print_tree(ast_node* root) {
     if (root == NULL) {
         printf("NULL\n");
         return;

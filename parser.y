@@ -78,7 +78,7 @@
     char str[50];
     int intval;
     bool boolval;
-    Node* nonterminal;
+    ast_node* nonterminal;
     float floatval;
 
     int cmp_type;
@@ -90,6 +90,14 @@
 
 root:
 |   root query ENDLINE { print_tree($2); printf("$> "); }
+;
+
+terminal:
+|   TYPE { $$ = new_type($1); }
+|   INT { $$ = new_number($1); }
+|   FLOAT { $$ = new_float_number($1); }
+|   BOOL { $$ = new_bool($1); }
+|   QUOTE string_list QUOTE { $$ = new_string($2, NULL); }
 ;
 
 query:
@@ -114,13 +122,10 @@ filter_select:
 |   FOR column_name IN STR FILTER filter_statement RETURN STR { $$ = new_select($4, $6, NULL, NULL, NULL); }
 ;
 
-// FOR u IN users FOR f IN friends RETURN u, f;
 join_empty_select:
 |   FOR column_name IN STR FOR column_name IN STR RETURN STR "," STR { $$ = new_select($4, NULL, $8, $6, $2); }
 ;
 
-// FOR u IN users FOR f IN friends FILTER u.id == f.userId RETURN u, f;
-// FOR u IN users FOR f IN friends FILTER u.id == f.userId && f.active == true && (u.status == "active" || f.age > 15) RETURN u, f;
 join_filter_select:
 |   FOR column_name IN STR FOR column_name IN STR FILTER filter_statement RETURN STR "," STR { $$ = new_select($4, $10, $8, $6, $2); }
 ;
@@ -177,7 +182,7 @@ filter_statement:
 
 logic_statement:
 |   column CMP terminal { $$ = new_compare($2, $1, $3); }
-|   terminal CMP column { $$ = new_compare(reverse_Comparison($2), $1, $3); }
+|   terminal CMP column { $$ = new_compare(switch_cmp_mode($2), $1, $3); }
 |   column CMP column { $$ = new_compare($2, $1, $3); }
 ;
 
@@ -194,13 +199,6 @@ string_list:
 |   STR { $$ = new_string(NULL, $1); }
 ;
 
-terminal:
-|   TYPE { $$ = new_type($1); }
-|   INT { $$ = new_integer($1); }
-|   FLOAT { $$ = new_float($1); }
-|   BOOL { $$ = new_bool($1); }
-|   QUOTE string_list QUOTE { $$ = new_string($2, NULL); }
-;
 
 %left "+" "-";
 %left "*" "/" "%";

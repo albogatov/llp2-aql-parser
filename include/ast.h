@@ -2,42 +2,42 @@
 #define AST_H
 #include <stdbool.h>
 
-enum NodeType {
-    NAME_my,
-    STRING_my,
-    INTEGER_my,
-    FLOAT_my,
-    BOOL_my,
-    LIST_my,
-    PAIR_my,
-    FOR_my,
-    INSERT_my,
-    REMOVE_my,
-    UPDATE_my,
-    CREATE_my,
-    DROP_my,
-    FILTER_my,
-    COMPARE_my,
-    TYPE_my
+enum ast_node_type {
+    NAME_NODE,
+    STRING_NODE,
+    NUMBER_NODE,
+    FLOAT_NUMBER_NODE,
+    BOOLEAN_NODE,
+    LIST_NODE,
+    PAIR_NODE,
+    FOR_NODE,
+    INSERT_NODE,
+    REMOVE_NODE,
+    UPDATE_NODE,
+    CREATE_NODE,
+    DROP_NODE,
+    FILTER_NODE,
+    COMPARE_NODE,
+    TYPE_NODE
 };
 
 enum DataType {
-    STR_my,
-    INT_my,
-    FLT_my,
-    BOOLEAN_my
+    STR_DATA,
+    NUMERIC_DATA,
+    FLOAT_NUMERIC_DATA,
+    BOOLEAN_DATA
 };
 
-static const char* DataType_strings[] = {
-        "STR",
-        "INT",
-        "FLT",
+static const char* type_repr_[] = {
+        "STRING",
+        "NUMBER",
+        "FLOAT_NUMBER",
         "BOOLEAN"
 };
 
 enum LogicOperation {
-    AND_my,
-    OR_my
+    AND_OP,
+    OR_OP
 };
 
 static const char* LogicOperation_strings[] = {
@@ -46,12 +46,18 @@ static const char* LogicOperation_strings[] = {
 };
 
 enum Comparison {
-    GREATER = 1, GREATER_OR_EQUAL = 2, LESS = 3, LESS_OR_EQUAL = 4, EQUAL = 5, NOT_EQUAL = 6, NO_COMPARE = 7,
+    GREATER = 1,
+    GREATER_OR_EQUAL,
+    LESS,
+    LESS_OR_EQUAL,
+    EQUAL,
+    NOT_EQUAL,
+    NO_COMPARE
 };
 
-enum Comparison reverse_Comparison(enum Comparison val);
+enum Comparison switch_cmp_mode(enum Comparison val);
 
-static const char* Comparison_strings[] = {
+static const char* cmp_op_repr_[] = {
         "GREATER",
         "GREATER_OR_EQUAL",
         "LESS",
@@ -62,7 +68,7 @@ static const char* Comparison_strings[] = {
         "NO_COMPARE"
 };
 
-union Value {
+union fields {
     char* str;
     enum LogicOperation log_op;
     enum Comparison comp;
@@ -72,36 +78,36 @@ union Value {
     enum DataType data_type;
 };
 
-typedef struct Node Node;
-typedef union Value Value;
-typedef enum NodeType NodeType;
+typedef struct ast_node ast_node;
+typedef union fields fields;
+typedef enum ast_node_type ast_node_type;
 
-struct Node {
-    NodeType type;
-    Value v_first;
-    Value v_second;
-    Node* first;
-    Node* second;
-    Node* third;
+struct ast_node {
+    ast_node_type type;
+    fields fields_one;
+    fields fields_two;
+    ast_node* first;
+    ast_node* second;
+    ast_node* third;
 };
 
-Node* new_name(const char* v_first, const char* v_second);
-Node* new_string(Node *first, const char *v_second);
-Node* new_integer(int v_first);
-Node* new_float(float v_first);
-Node* new_bool(bool v_first);
-Node* new_type(enum DataType v_first);
-Node* new_list(Node* first, Node* second);
-Node* new_pair(const char* v_first, Node* second);
-Node* new_select(const char* v_first, Node* first, const char* v_second, Node* second, Node* third);
-Node* new_delete(const char* v_first, Node* first);
-Node* new_insert(const char* v_first, Node* first);
-Node* new_update(const char* v_first, Node* first, Node* second);
-Node* new_create(const char* v_first, Node* first);
-Node* new_drop(const char* v_first);
-Node* new_where(enum LogicOperation v_first, Node* first, Node* second);
-Node* new_compare(enum Comparison v_first, Node* first, Node* second);
+ast_node* new_name(const char* v_first, const char* v_second);
+ast_node* new_string(ast_node *first, const char *v_second);
+ast_node* new_number(int v_first);
+ast_node* new_float_number(float v_first);
+ast_node* new_bool(bool v_first);
+ast_node* new_type(enum DataType v_first);
+ast_node* new_list(ast_node* first, ast_node* second);
+ast_node* new_pair(const char* v_first, ast_node* second);
+ast_node* new_select(const char* v_first, ast_node* first, const char* v_second, ast_node* second, ast_node* third);
+ast_node* new_delete(const char* v_first, ast_node* first);
+ast_node* new_insert(const char* v_first, ast_node* first);
+ast_node* new_update(const char* v_first, ast_node* first, ast_node* second);
+ast_node* new_create(const char* v_first, ast_node* first);
+ast_node* new_drop(const char* v_first);
+ast_node* new_where(enum LogicOperation v_first, ast_node* first, ast_node* second);
+ast_node* new_compare(enum Comparison v_first, ast_node* first, ast_node* second);
 
-void close_tree(Node* root);
+void close_tree(ast_node* root);
 
 #endif

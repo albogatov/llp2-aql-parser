@@ -6,7 +6,7 @@
     #include <stdio.h>
     #include <string.h>
 
-    #include "ast.h"
+    #include "include/ast.h"
     #include "parser.tab.h"
     void print_error(char*);
 %}

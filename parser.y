@@ -1,7 +1,7 @@
 
 %{
-    #include "ast.h"
-    #include "output.h"
+    #include "include/ast.h"
+    #include "include/output.h"
 
     #define YYERROR_VERBOSE 1
 

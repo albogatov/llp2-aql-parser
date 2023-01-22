@@ -19,20 +19,6 @@ Node* new_name(const char* v_first, const char* v_second) {
     return new_node;
 }
 
-//Node *new_string(const char *v_first, const char *v_second) {
-//    Node* new_node = malloc(sizeof(Node));
-//    new_node->type = STRING_my;
-//    new_node->v_first.str = safe_strcpy(v_first);
-//    if (v_second) {
-//        safe_strcat(&new_node->v_first.str, " ");
-//        safe_strcat(&new_node->v_first.str, v_second);
-//    }
-//    new_node->first = NULL;
-//    new_node->second = NULL;
-//    new_node->third = NULL;
-//    return new_node;
-//}
-
 Node *new_string(Node *first, const char *v_second) {
     Node* new_node = malloc(sizeof(Node));
     new_node->type = STRING_my;

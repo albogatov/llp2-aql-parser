@@ -3,14 +3,14 @@
 #include <stdlib.h>
 #include "../include/string_utils.h"
 
-char* safe_strcpy (const char* from) {
+char* safe_string_copy (const char* from) {
     int count = strlen(from);
     char* ret = malloc(sizeof(char) * (count + 1));
     strcpy(ret, from);
     return ret;
 }
 
-void safe_strcat (char** str, const char * str2) {
+void safe_string_concatenation (char** str, const char * str2) {
     char* str1 = *str;
     int first_len = strlen(str1), second_len = strlen(str2);
     char * new_str = malloc(sizeof(char) * (first_len + second_len + 1));
@@ -22,7 +22,7 @@ void safe_strcat (char** str, const char * str2) {
 
 void indent(int indentation, char** src) {
     for (int i = 0; i < indentation; i++) {
-        safe_strcat(src, "   ");
+        safe_string_concatenation(src, "   ");
     }
 }
 
@@ -30,310 +30,310 @@ void indent(int indentation, char** src) {
 char* print_string_node(ast_node* node, int indentation) {
     char* output = malloc(sizeof(char));
     indent(indentation, &output);
-    safe_strcat(&output, "String { ");
-    safe_strcat(&output, node->fields_one.string);
-    safe_strcat(&output, " }");
+    safe_string_concatenation(&output, "String { ");
+    safe_string_concatenation(&output, node->fields_one.string);
+    safe_string_concatenation(&output, " }");
     return output;
 }
 
 char* print_column_node(ast_node* node, int indentation) {
     char* output = malloc(sizeof(char));
     indent(indentation, &output);
-    safe_strcat(&output, "Column {\n");
+    safe_string_concatenation(&output, "Column {\n");
     indent(indentation + 1, &output);
     if (node->fields_one.string) {
-        safe_strcat(&output, "table: ");
-        safe_strcat(&output, node->fields_one.string);
-        safe_strcat(&output, "\n");
+        safe_string_concatenation(&output, "table: ");
+        safe_string_concatenation(&output, node->fields_one.string);
+        safe_string_concatenation(&output, "\n");
         indent(indentation + 1, &output);
     }
     if (node->fields_two.string) {
-        safe_strcat(&output, "column_name: ");
-        safe_strcat(&output, node->fields_two.string);
-        safe_strcat(&output, "\n");
+        safe_string_concatenation(&output, "column_name: ");
+        safe_string_concatenation(&output, node->fields_two.string);
+        safe_string_concatenation(&output, "\n");
         indent(indentation, &output);
     }
-    safe_strcat(&output, "}");
+    safe_string_concatenation(&output, "}");
     return output;
 }
 
 char* print_integer_node(ast_node* node, int indentation) {
     char* output = malloc(sizeof(char));
     indent(indentation, &output);
-    safe_strcat(&output, "Number { ");
+    safe_string_concatenation(&output, "Number { ");
     int length = snprintf(NULL, 0, "%d", node->fields_one.number);
     char* str = malloc( length + 1 );
     snprintf(str, length + 1, "%d", node->fields_one.number);
-    safe_strcat(&output, str);
+    safe_string_concatenation(&output, str);
     free(str);
-    safe_strcat(&output, " }");
+    safe_string_concatenation(&output, " }");
     return output;
 }
 
 char* print_float_node(ast_node* node, int indentation) {
     char* output = malloc(sizeof(char));
     indent(indentation, &output);
-    safe_strcat(&output, "Float Number { ");
+    safe_string_concatenation(&output, "Float Number { ");
     int length = snprintf(NULL, 0, "%f", node->fields_one.float_number);
     char* str = malloc( length + 1 );
     snprintf(str, length + 1, "%f", node->fields_one.float_number);
-    safe_strcat(&output, str);
+    safe_string_concatenation(&output, str);
     free(str);
-    safe_strcat(&output, " }");
+    safe_string_concatenation(&output, " }");
     return output;
 }
 
 char* print_boolean_node(ast_node* node, int indentation) {
     char* output = malloc(sizeof(char));
     indent(indentation, &output);
-    safe_strcat(&output, "Boolean { ");
-    safe_strcat(&output, node->fields_one.boolean ? "TRUE" : "FALSE");
-    safe_strcat(&output, " }");
+    safe_string_concatenation(&output, "Boolean { ");
+    safe_string_concatenation(&output, node->fields_one.boolean ? "TRUE" : "FALSE");
+    safe_string_concatenation(&output, " }");
     return output;
 }
 
 char* print_type_node(ast_node* node, int indentation) {
     char* output = malloc(sizeof(char));
     indent(indentation, &output);
-    safe_strcat(&output, "Type { ");
-    safe_strcat(&output, type_repr_[node->fields_one.data_type]);
-    safe_strcat(&output, " }");
+    safe_string_concatenation(&output, "Type { ");
+    safe_string_concatenation(&output, type_repr_[node->fields_one.data_type]);
+    safe_string_concatenation(&output, " }");
     return output;
 }
 
 char* print_list_node(ast_node* node, int indentation) {
     char* output = malloc(sizeof(char));
     indent(indentation, &output);
-    safe_strcat(&output, "List {\n");
+    safe_string_concatenation(&output, "List {\n");
     ast_node* next = node;
     char* ptr;
     while (next != NULL) {
         ptr = to_string_general(next->first, indentation + 1);
-        safe_strcat(&output, ptr);
+        safe_string_concatenation(&output, ptr);
         free(ptr);
-        safe_strcat(&output, ";\n");
+        safe_string_concatenation(&output, ";\n");
         next = next->second;
     }
     indent(indentation, &output);
-    safe_strcat(&output, "}");
+    safe_string_concatenation(&output, "}");
     return output;
 }
 
 char* print_pair_node(ast_node* node, int indentation) {
     char* output = malloc(sizeof(char));
     indent(indentation, &output);
-    safe_strcat(&output, "Pair {\n");
+    safe_string_concatenation(&output, "Pair {\n");
     indent(indentation + 1, &output);
-    safe_strcat(&output, "column_name: ");
-    safe_strcat(&output, node->fields_one.string);
-    safe_strcat(&output, "\n");
+    safe_string_concatenation(&output, "column_name: ");
+    safe_string_concatenation(&output, node->fields_one.string);
+    safe_string_concatenation(&output, "\n");
     char* pair = to_string_general(node->second, indentation + 1);
-    safe_strcat(&output, pair);
+    safe_string_concatenation(&output, pair);
     free(pair);
-    safe_strcat(&output, "\n");
+    safe_string_concatenation(&output, "\n");
     indent(indentation, &output);
-    safe_strcat(&output, "}");
+    safe_string_concatenation(&output, "}");
     return output;
 }
 
 char* Select_to_string(ast_node* node, int indentation) {
     char* output = malloc(sizeof(char));
     indent(indentation, &output);
-    safe_strcat(&output, "Select {\n");
+    safe_string_concatenation(&output, "Select {\n");
     char* ptr;
     indent(indentation + 1, &output);
-    safe_strcat(&output, "columns: ");
+    safe_string_concatenation(&output, "columns: ");
     if (node->third != NULL) {
-        safe_strcat(&output, "\n");
+        safe_string_concatenation(&output, "\n");
         ptr = to_string_general(node->third, indentation + 2);
-        safe_strcat(&output, ptr);
+        safe_string_concatenation(&output, ptr);
         free(ptr);
     }
     else {
-        safe_strcat(&output, "*");
+        safe_string_concatenation(&output, "*");
     }
-    safe_strcat(&output, "\n");
+    safe_string_concatenation(&output, "\n");
     indent(indentation + 1, &output);
-    safe_strcat(&output, "table: ");
-    safe_strcat(&output, node->fields_one.string);
-    safe_strcat(&output, "\n");
+    safe_string_concatenation(&output, "table: ");
+    safe_string_concatenation(&output, node->fields_one.string);
+    safe_string_concatenation(&output, "\n");
     indent(indentation + 1, &output);
-    safe_strcat(&output, "join: ");
+    safe_string_concatenation(&output, "join: ");
     if (node->fields_two.string != NULL) {
-        safe_strcat(&output, node->fields_two.string);
+        safe_string_concatenation(&output, node->fields_two.string);
     } else {
-        safe_strcat(&output, "NULL");
+        safe_string_concatenation(&output, "NULL");
     }
-    safe_strcat(&output, "\n");
+    safe_string_concatenation(&output, "\n");
     indent(indentation + 1, &output);
-    safe_strcat(&output, "on: ");
+    safe_string_concatenation(&output, "on: ");
     if (node->second != NULL) {
-        safe_strcat(&output, "\n");
+        safe_string_concatenation(&output, "\n");
         ptr = to_string_general(node->second, indentation + 2);
-        safe_strcat(&output, ptr);
+        safe_string_concatenation(&output, ptr);
         free(ptr);
     } else {
-        safe_strcat(&output, "NULL");
+        safe_string_concatenation(&output, "NULL");
     }
-    safe_strcat(&output, "\n");
+    safe_string_concatenation(&output, "\n");
     indent(indentation + 1, &output);
-    safe_strcat(&output, "condition: ");
+    safe_string_concatenation(&output, "condition: ");
     if (node->first != NULL) {
-        safe_strcat(&output, "\n");
+        safe_string_concatenation(&output, "\n");
         ptr = to_string_general(node->first, indentation + 2);
-        safe_strcat(&output, ptr);
+        safe_string_concatenation(&output, ptr);
         free(ptr);
     } else {
-        safe_strcat(&output, "NULL");
+        safe_string_concatenation(&output, "NULL");
     }
-    safe_strcat(&output, "\n");
+    safe_string_concatenation(&output, "\n");
     indent(indentation, &output);
-    safe_strcat(&output, "}");
+    safe_string_concatenation(&output, "}");
     return output;
 }
 
 char* print_delete_node(ast_node* node, int indentation) {
     char* output = malloc(sizeof(char));
     indent(indentation, &output);
-    safe_strcat(&output, "Delete {\n");
+    safe_string_concatenation(&output, "Delete {\n");
     indent(indentation + 1, &output);
-    safe_strcat(&output, "table: ");
-    safe_strcat(&output, node->fields_one.string);
-    safe_strcat(&output, "\n");
+    safe_string_concatenation(&output, "table: ");
+    safe_string_concatenation(&output, node->fields_one.string);
+    safe_string_concatenation(&output, "\n");
     indent(indentation + 1, &output);
-    safe_strcat(&output, "condition: ");
+    safe_string_concatenation(&output, "condition: ");
     char* ptr;
     if (node->first != NULL) {
-        safe_strcat(&output, "\n");
+        safe_string_concatenation(&output, "\n");
         ptr = to_string_general(node->first, indentation + 2);
-        safe_strcat(&output, ptr);
+        safe_string_concatenation(&output, ptr);
         free(ptr);
     } else {
-        safe_strcat(&output, "NULL");
+        safe_string_concatenation(&output, "NULL");
     }
-    safe_strcat(&output, "\n");
+    safe_string_concatenation(&output, "\n");
     indent(indentation, &output);
-    safe_strcat(&output, "}");
+    safe_string_concatenation(&output, "}");
     return output;
 }
 
 char* print_insert_node(ast_node* node, int indentation) {
     char* output = malloc(sizeof(char));
     indent(indentation, &output);
-    safe_strcat(&output, "Insert {\n");
+    safe_string_concatenation(&output, "Insert {\n");
     indent(indentation + 1, &output);
-    safe_strcat(&output, "name: ");
-    safe_strcat(&output, node->fields_one.string);
-    safe_strcat(&output, "\n");
+    safe_string_concatenation(&output, "name: ");
+    safe_string_concatenation(&output, node->fields_one.string);
+    safe_string_concatenation(&output, "\n");
     char* ptr = to_string_general(node->first, indentation + 1);
-    safe_strcat(&output, ptr);
+    safe_string_concatenation(&output, ptr);
     free(ptr);
-    safe_strcat(&output, "\n");
+    safe_string_concatenation(&output, "\n");
     indent(indentation, &output);
-    safe_strcat(&output, "}");
+    safe_string_concatenation(&output, "}");
     return output;
 }
 
 char* print_update_node(ast_node* node, int indentation) {
     char* output = malloc(sizeof(char));
     indent(indentation, &output);
-    safe_strcat(&output, "Update {\n");
+    safe_string_concatenation(&output, "Update {\n");
     indent(indentation + 1, &output);
-    safe_strcat(&output, "table: ");
-    safe_strcat(&output, node->fields_one.string);
-    safe_strcat(&output, "\n");
+    safe_string_concatenation(&output, "table: ");
+    safe_string_concatenation(&output, node->fields_one.string);
+    safe_string_concatenation(&output, "\n");
     indent(indentation + 1, &output);
     char* ptr;
-    safe_strcat(&output, "list_values:");
+    safe_string_concatenation(&output, "list_values:");
     if (node->second != NULL) {
-        safe_strcat(&output, "\n");
+        safe_string_concatenation(&output, "\n");
         ptr = to_string_general(node->second, indentation + 2);
-        safe_strcat(&output, ptr);
+        safe_string_concatenation(&output, ptr);
         free(ptr);
     } else {
-        safe_strcat(&output, "NULL");
+        safe_string_concatenation(&output, "NULL");
     }
-    safe_strcat(&output, "\n");
+    safe_string_concatenation(&output, "\n");
     indent(indentation + 1, &output);
-    safe_strcat(&output, "condition: ");
+    safe_string_concatenation(&output, "condition: ");
 
     if (node->first != NULL) {
-        safe_strcat(&output, "\n");
+        safe_string_concatenation(&output, "\n");
         ptr = to_string_general(node->first, indentation + 2);
-        safe_strcat(&output, ptr);
+        safe_string_concatenation(&output, ptr);
         free(ptr);
     } else {
-        safe_strcat(&output, "NULL");
+        safe_string_concatenation(&output, "NULL");
     }
-    safe_strcat(&output, "\n");
+    safe_string_concatenation(&output, "\n");
     indent(indentation, &output);
-    safe_strcat(&output, "}");
+    safe_string_concatenation(&output, "}");
     return output;
 }
 
 char* print_create_node(ast_node* node, int indentation) {
     char* output = malloc(sizeof(char));
     indent(indentation, &output);
-    safe_strcat(&output, "Create {\n");
+    safe_string_concatenation(&output, "Create {\n");
     indent(indentation + 1, &output);
-    safe_strcat(&output, "name: ");
-    safe_strcat(&output, node->fields_one.string);
-    safe_strcat(&output, "\n");
+    safe_string_concatenation(&output, "name: ");
+    safe_string_concatenation(&output, node->fields_one.string);
+    safe_string_concatenation(&output, "\n");
     char* ptr = to_string_general(node->first, indentation + 1);
-    safe_strcat(&output, ptr);
+    safe_string_concatenation(&output, ptr);
     free(ptr);
-    safe_strcat(&output, "\n");
+    safe_string_concatenation(&output, "\n");
     indent(indentation, &output);
-    safe_strcat(&output, "}");
+    safe_string_concatenation(&output, "}");
     return output;
 }
 
 char* print_drop_node(ast_node* node, int indentation) {
     char* output = malloc(sizeof(char));
     indent(indentation, &output);
-    safe_strcat(&output, "Drop { ");
-    safe_strcat(&output, node->fields_one.string);
-    safe_strcat(&output, " }");
+    safe_string_concatenation(&output, "Drop { ");
+    safe_string_concatenation(&output, node->fields_one.string);
+    safe_string_concatenation(&output, " }");
     return output;
 }
 
 char* print_where_node(ast_node* node, int indentation) {
     char* output = malloc(sizeof(char));
     indent(indentation, &output);
-    safe_strcat(&output, "Where {\n");
+    safe_string_concatenation(&output, "Where {\n");
     char* ptr = to_string_general(node->first, indentation + 1);
-    safe_strcat(&output, ptr);
+    safe_string_concatenation(&output, ptr);
     free(ptr);
-    safe_strcat(&output, "\n");
+    safe_string_concatenation(&output, "\n");
     indent(indentation + 1, &output);
-    safe_strcat(&output, logic_repr_[node->fields_one.logic_op_type_type]);
-    safe_strcat(&output, "\n");
+    safe_string_concatenation(&output, logic_repr_[node->fields_one.logic_op_type_type]);
+    safe_string_concatenation(&output, "\n");
     ptr = to_string_general(node->second, indentation + 1);
-    safe_strcat(&output, ptr);
+    safe_string_concatenation(&output, ptr);
     free(ptr);
-    safe_strcat(&output, "\n");
+    safe_string_concatenation(&output, "\n");
     indent(indentation, &output);
-    safe_strcat(&output, "}");
+    safe_string_concatenation(&output, "}");
     return output;
 }
 
 char* print_compare_node(ast_node* node, int indentation) {
     char* output = malloc(sizeof(char));
     indent(indentation, &output);
-    safe_strcat(&output, "Compare {\n");
+    safe_string_concatenation(&output, "Compare {\n");
     char* ptr = to_string_general(node->first, indentation + 1);
-    safe_strcat(&output, ptr);
+    safe_string_concatenation(&output, ptr);
     free(ptr);
-    safe_strcat(&output, "\n");
+    safe_string_concatenation(&output, "\n");
     indent(indentation + 1, &output);
-    safe_strcat(&output, cmp_op_repr_[node->fields_one.comp_op_type]);
-    safe_strcat(&output, "\n");
+    safe_string_concatenation(&output, cmp_op_repr_[node->fields_one.comp_op_type]);
+    safe_string_concatenation(&output, "\n");
     ptr = to_string_general(node->second, indentation + 1);
-    safe_strcat(&output, ptr);
+    safe_string_concatenation(&output, ptr);
     free(ptr);
-    safe_strcat(&output, "\n");
+    safe_string_concatenation(&output, "\n");
     indent(indentation, &output);
-    safe_strcat(&output, "}");
+    safe_string_concatenation(&output, "}");
     return output;
 }
 

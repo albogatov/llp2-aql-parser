@@ -21,7 +21,7 @@ enum ast_node_type {
     TYPE_NODE
 };
 
-enum DataType {
+enum type {
     STR_DATA,
     NUMERIC_DATA,
     FLOAT_NUMERIC_DATA,
@@ -35,7 +35,7 @@ static const char* type_repr_[] = {
         "BOOLEAN"
 };
 
-enum logic_op_type_type {
+enum logic_op_type {
     AND_OP,
     OR_OP
 };
@@ -70,12 +70,12 @@ static const char* cmp_op_repr_[] = {
 
 union fields {
     char* string;
-    enum logic_op_type_type logic_op_type_type;
+    enum logic_op_type logic_op_type_type;
     enum compare_op_type comp_op_type;
     int number;
     float float_number;
     bool boolean;
-    enum DataType data_type;
+    enum type data_type;
 };
 
 typedef struct ast_node ast_node;
@@ -96,7 +96,7 @@ ast_node* new_string(ast_node *first, const char *v_second);
 ast_node* new_number(int v_first);
 ast_node* new_float_number(float v_first);
 ast_node* new_bool(bool v_first);
-ast_node* new_type(enum DataType v_first);
+ast_node* new_type(enum type v_first);
 ast_node* new_list(ast_node* first, ast_node* second);
 ast_node* new_pair(const char* v_first, ast_node* second);
 ast_node* new_select(const char* v_first, ast_node* first, const char* v_second, ast_node* second, ast_node* third);
@@ -105,7 +105,7 @@ ast_node* new_insert(const char* v_first, ast_node* first);
 ast_node* new_update(const char* v_first, ast_node* first, ast_node* second);
 ast_node* new_create(const char* v_first, ast_node* first);
 ast_node* new_drop(const char* v_first);
-ast_node* new_where(enum logic_op_type_type v_first, ast_node* first, ast_node* second);
+ast_node* new_where(enum logic_op_type v_first, ast_node* first, ast_node* second);
 ast_node* new_compare(enum compare_op_type v_first, ast_node* first, ast_node* second);
 
 void close_tree(ast_node* root);

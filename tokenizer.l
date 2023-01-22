@@ -11,7 +11,7 @@
     void print_error(char*);
 %}
 
-%option noyywrap nounput noinput batch debug
+%option noyywrap nounput noinput
 
 alpha   [A-Za-z_0-9 \t\r]
 id    [a-zA-Z][a-zA-Z_0-9]*
@@ -26,13 +26,14 @@ quoted_string \"{word}*\"
 "for"       {return FOR;}
 "insert"    {return INSERT;}
 "update"    {return UPDATE;}
-"create"    {return CREATE;}
 "remove"    {return REMOVE;}
-"drop"      {return DROP;}
 "in"        {return IN;}
 "filter"    {return FILTER;}
 "with"      {return WITH;}
 "return"    {return RETURN;}
+
+"create"    {return CREATE;}
+"drop"      {return DROP;}
 
 "&&"        {yylval.logic_op_type = 1; return AND;}
 "||"        {yylval.logic_op_type = 2; return OR;}
@@ -44,7 +45,7 @@ quoted_string \"{word}*\"
 "=="        {yylval.cmp_op_type = 5; return CMP;}
 "!="        {yylval.cmp_op_type = 6; return CMP;}
 
-"string"       {yylval.type = 1; return TYPE;}
+"string"    {yylval.type = 1; return TYPE;}
 "int"       {yylval.type = 2; return TYPE;}
 "float"     {yylval.type = 3; return TYPE;}
 "bool"      {yylval.type = 4; return TYPE;}

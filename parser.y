@@ -203,9 +203,6 @@ string_list:
 ;
 
 
-%left "+" "-";
-%left "*" "/" "%";
-
 %left OR;
 %left AND;
 

@@ -65,12 +65,13 @@
 %type <nonterminal> filter_statement
 %type <nonterminal> logic_statement
 %type <nonterminal> column
+%type <nonterminal> column_name
 %type <nonterminal> terminal
 
 %type <nonterminal> insert_query
 %type <nonterminal> values_list
 %type <nonterminal> values_pair
-
+%type <nonterminal> string_list
 
 
 %union {
@@ -91,7 +92,8 @@ root:
 |   root query ENDLINE { print_tree($2); printf("$> "); }
 ;
 
-query: select_query
+query:
+|   select_query
 |   insert_query
 |   delete_query
 |   drop_query
@@ -106,21 +108,21 @@ select_query:
 |   join_filter_select
 ;
 empty_select:
-|   FOR STR IN STR RETURN STR { $$ = new_select($4, NULL, NULL, NULL, NULL); }
+|   FOR column_name IN STR RETURN STR { $$ = new_select($4, NULL, NULL, NULL, NULL); }
 ;
 filter_select:
-|   FOR STR IN STR FILTER filter_statement RETURN STR { $$ = new_select($4, $6, NULL, NULL, NULL); }
+|   FOR column_name IN STR FILTER filter_statement RETURN STR { $$ = new_select($4, $6, NULL, NULL, NULL); }
 ;
 
 // FOR u IN users FOR f IN friends RETURN u, f;
 join_empty_select:
-|   FOR column IN STR FOR column IN STR RETURN STR "," STR { $$ = new_select($4, NULL, $8, $6, $2); }
+|   FOR column_name IN STR FOR column_name IN STR RETURN STR "," STR { $$ = new_select($4, NULL, $8, $6, $2); }
 ;
 
 // FOR u IN users FOR f IN friends FILTER u.id == f.userId RETURN u, f;
 // FOR u IN users FOR f IN friends FILTER u.id == f.userId && f.active == true && (u.status == "active" || f.age > 15) RETURN u, f;
 join_filter_select:
-|   FOR column IN STR FOR column IN STR FILTER filter_statement RETURN STR "," STR { $$ = new_select($4, $10, $8, $6, $2); }
+|   FOR column_name IN STR FOR column_name IN STR FILTER filter_statement RETURN STR "," STR { $$ = new_select($4, $10, $8, $6, $2); }
 ;
 
 update_query:
@@ -128,10 +130,10 @@ update_query:
 |   filter_update
 ;
 empty_update:
-|   FOR STR IN STR UPDATE STR WITH "{" values_list "}" IN STR { $$ = new_update($4, NULL, $9); }
+|   FOR column_name IN STR UPDATE STR WITH "{" values_list "}" IN STR { $$ = new_update($4, NULL, $9); }
 ;
 filter_update:
-|   FOR STR IN STR FILTER filter_statement UPDATE STR WITH "{" values_list "}" IN STR { $$ = new_update($4, $6, $11); }
+|   FOR column_name IN STR FILTER filter_statement UPDATE STR WITH "{" values_list "}" IN STR { $$ = new_update($4, $6, $11); }
 ;
 
 delete_query:
@@ -139,10 +141,10 @@ delete_query:
 |   filter_delete
 ;
 empty_delete:
-|   FOR STR IN STR REMOVE STR IN STR { $$ = new_delete($4, NULL); }
+|   FOR column_name IN STR REMOVE STR IN STR { $$ = new_delete($4, NULL); }
 ;
 filter_delete:
-|   FOR STR IN STR FILTER filter_statement REMOVE STR IN STR { $$ = new_delete($4, $6); }
+|   FOR column_name IN STR FILTER filter_statement REMOVE STR IN STR { $$ = new_delete($4, $6); }
 ;
 
 insert_query:
@@ -183,12 +185,21 @@ column:
 |   STR DOT STR { $$ = new_name($1, $3); }
 ;
 
+column_name:
+|   STR { $$ = new_name(NULL, $1); }
+;
+
+string_list:
+|   string_list STR { $$ = new_string($1, $2); }
+|   STR { $$ = new_string(NULL, $1); }
+;
+
 terminal:
 |   TYPE { $$ = new_type($1); }
 |   INT { $$ = new_integer($1); }
 |   FLOAT { $$ = new_float($1); }
 |   BOOL { $$ = new_bool($1); }
-|   QUOTE STR QUOTE { $$ = new_string($2); }
+|   QUOTE string_list QUOTE { $$ = new_string($2, NULL); }
 ;
 
 %left "+" "-";

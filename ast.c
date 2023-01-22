@@ -9,7 +9,8 @@ enum Comparison reverse_Comparison(enum Comparison val) {
 Node* new_name(const char* v_first, const char* v_second) {
     Node* new_node = malloc(sizeof(Node));
     new_node->type = NAME_my;
-    new_node->v_first.str = str_copy(v_first);
+    if (v_first != NULL)
+        new_node->v_first.str = str_copy(v_first);
     if (v_second != NULL)
         new_node->v_second.str = str_copy(v_second);
     new_node->first = NULL;
@@ -18,10 +19,31 @@ Node* new_name(const char* v_first, const char* v_second) {
     return new_node;
 }
 
-Node* new_string(const char* v_first) {
+//Node *new_string(const char *v_first, const char *v_second) {
+//    Node* new_node = malloc(sizeof(Node));
+//    new_node->type = STRING_my;
+//    new_node->v_first.str = str_copy(v_first);
+//    if (v_second) {
+//        str_concat(&new_node->v_first.str, " ");
+//        str_concat(&new_node->v_first.str, v_second);
+//    }
+//    new_node->first = NULL;
+//    new_node->second = NULL;
+//    new_node->third = NULL;
+//    return new_node;
+//}
+
+Node *new_string(Node *first, const char *v_second) {
     Node* new_node = malloc(sizeof(Node));
     new_node->type = STRING_my;
-    new_node->v_first.str = str_copy(v_first);
+    if (first)
+        new_node->v_first.str = str_copy(first->v_first.str);
+    if (v_second) {
+        if (first)
+            str_concat(&new_node->v_first.str, " ");
+        else new_node->v_first.str = str_copy("");
+        str_concat(&new_node->v_first.str, v_second);
+    }
     new_node->first = NULL;
     new_node->second = NULL;
     new_node->third = NULL;

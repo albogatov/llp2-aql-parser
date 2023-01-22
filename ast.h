@@ -51,15 +51,14 @@ enum Comparison {
 enum Comparison reverse_Comparison(enum Comparison val);
 
 static const char* Comparison_strings[] = {
-        "CONTAINS",
-        ">",
-        ">=",
-        "==",
+        "GREATER",
+        "GREATER_OR_EQUAL",
+        "LESS",
+        "LESS_OR_EQUAL",
         "NO_COMPARE",
-        "!=",
-        "=<",
-        "<",
-        "IS SUBSTR OF"
+        "EQUAL",
+        "NOT_EQUAL",
+        "NO_COMPARE"
 };
 
 union Value {
@@ -86,7 +85,7 @@ struct Node {
 };
 
 Node* new_name(const char* v_first, const char* v_second);
-Node* new_string(const char* v_first);
+Node* new_string(Node *first, const char *v_second);
 Node* new_integer(int v_first);
 Node* new_float(float v_first);
 Node* new_bool(bool v_first);

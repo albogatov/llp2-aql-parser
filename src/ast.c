@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include "string_utils.h"
+#include "../include/string_utils.h"
 
 enum Comparison reverse_Comparison(enum Comparison val) {
     if (val < 3 || val > 5) return 8 - val;

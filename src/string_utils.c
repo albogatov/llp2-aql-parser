@@ -1,7 +1,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "string_utils.h"
+#include "../include/string_utils.h"
 
 char* safe_strcpy (const char* from) {
     int count = strlen(from);

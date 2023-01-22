@@ -1,4 +1,4 @@
-#include "output.h"
+#include "../include/output.h"
 
 void print_tree(Node* root) {
     if (root == NULL) {

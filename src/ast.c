@@ -120,13 +120,13 @@ ast_node* new_select(const char* v_first, ast_node* first, const char* v_second,
     new_node->third = third;
     return new_node;
 }
-ast_node* new_delete(const char* v_first, ast_node* first) {
+ast_node *new_delete(const char *v_first, ast_node *first, ast_node *second) {
     ast_node* new_node = malloc(sizeof(ast_node));
     new_node->type = REMOVE_NODE;
     new_node->fields_one.string = safe_string_copy(v_first);
     new_node->first = first;
     new_node->second = NULL;
-    new_node->third = NULL;
+    new_node->third = second;
     return new_node;
 }
 ast_node* new_insert(const char* v_first, ast_node* first) {

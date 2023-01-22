@@ -119,10 +119,10 @@ select_query:
 |   select_join_with_filter
 ;
 select_simple:
-|   FOR column_name IN STR RETURN STR { $$ = new_select($4, NULL, NULL, NULL, NULL); }
+|   FOR column_name IN STR RETURN STR { $$ = new_select($4, NULL, NULL, NULL, $2); }
 ;
 select_with_filter:
-|   FOR column_name IN STR FILTER filter_condition RETURN STR { $$ = new_select($4, $6, NULL, NULL, NULL); }
+|   FOR column_name IN STR FILTER filter_condition RETURN STR { $$ = new_select($4, $6, NULL, NULL, $2); }
 ;
 
 select_join_simple:
@@ -149,10 +149,10 @@ delete_query:
 |   delete_with_filter
 ;
 delete_simple:
-|   FOR column_name IN STR REMOVE STR IN STR { $$ = new_delete($4, NULL); }
+|   FOR column_name IN STR REMOVE STR IN STR { $$ = new_delete($4, NULL, $2); }
 ;
 delete_with_filter:
-|   FOR column_name IN STR FILTER filter_condition REMOVE STR IN STR { $$ = new_delete($4, $6); }
+|   FOR column_name IN STR FILTER filter_condition REMOVE STR IN STR { $$ = new_delete($4, $6, $2); }
 ;
 
 insert_query:

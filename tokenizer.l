@@ -11,7 +11,7 @@
     void print_error(char*);
 %}
 
-%option noyywrap nounput noinput
+%option noyywrap nounput noinput debug
 
 alpha   [A-Za-z_0-9 \t\r]
 id    [a-zA-Z][a-zA-Z_0-9]*
@@ -45,10 +45,10 @@ quoted_string \"{word}*\"
 "=="        {yylval.cmp_op_type = 5; return CMP;}
 "!="        {yylval.cmp_op_type = 6; return CMP;}
 
+"float"     {yylval.type = 0; return TYPE;}
 "string"    {yylval.type = 1; return TYPE;}
 "int"       {yylval.type = 2; return TYPE;}
-"float"     {yylval.type = 3; return TYPE;}
-"bool"      {yylval.type = 4; return TYPE;}
+"bool"      {yylval.type = 3; return TYPE;}
 "true"      {yylval.boolean_value = 1; return BOOL;}
 "false"     {yylval.boolean_value = 0; return BOOL;}
 

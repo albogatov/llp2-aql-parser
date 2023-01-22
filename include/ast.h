@@ -29,9 +29,9 @@ enum type {
 };
 
 static const char* type_repr_[] = {
+        "FLOAT_NUMBER",
         "STRING",
         "NUMBER",
-        "FLOAT_NUMBER",
         "BOOLEAN"
 };
 
@@ -100,7 +100,7 @@ ast_node* new_type(enum type v_first);
 ast_node* new_list(ast_node* first, ast_node* second);
 ast_node* new_pair(const char* v_first, ast_node* second);
 ast_node* new_select(const char* v_first, ast_node* first, const char* v_second, ast_node* second, ast_node* third);
-ast_node* new_delete(const char* v_first, ast_node* first);
+ast_node *new_delete(const char *v_first, ast_node *first, ast_node *second);
 ast_node* new_insert(const char* v_first, ast_node* first);
 ast_node* new_update(const char* v_first, ast_node* first, ast_node* second);
 ast_node* new_create(const char* v_first, ast_node* first);

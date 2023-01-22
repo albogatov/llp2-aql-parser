@@ -142,7 +142,7 @@ char* Select_to_string(ast_node* node, int indentation) {
     safe_string_concatenation(&output, "FOR {\n");
     char* ptr;
     indent(indentation + 1, &output);
-    safe_string_concatenation(&output, "columns: ");
+    safe_string_concatenation(&output, "COLUMNS: ");
     if (node->third != NULL) {
         safe_string_concatenation(&output, "\n");
         ptr = to_string_general(node->third, indentation + 2);
@@ -197,9 +197,18 @@ char* print_delete_node(ast_node* node, int indentation) {
     safe_string_concatenation(&output, "TABLE: ");
     safe_string_concatenation(&output, node->fields_one.string);
     safe_string_concatenation(&output, "\n");
+    char* ptr;
+    indent(indentation + 1, &output);
+    safe_string_concatenation(&output, "KEYS: ");
+    if (node->third != NULL) {
+        safe_string_concatenation(&output, "\n");
+        ptr = to_string_general(node->third, indentation + 2);
+        safe_string_concatenation(&output, ptr);
+        free(ptr);
+    }
+    safe_string_concatenation(&output, "\n");
     indent(indentation + 1, &output);
     safe_string_concatenation(&output, "CONDITION: ");
-    char* ptr;
     if (node->first != NULL) {
         safe_string_concatenation(&output, "\n");
         ptr = to_string_general(node->first, indentation + 2);
